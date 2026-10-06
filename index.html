@@ -31,6 +31,14 @@
 html{scroll-behavior:smooth}
 body{font-family:'Segoe UI',system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);font-size:15px;line-height:1.6}
 
+/* MARQUE : même graphie que le logo (Ora clair + Score bleu) */
+.os{font-weight:800;color:#f1f5f9;white-space:nowrap}
+.os span{color:var(--blue)}
+.btn-primary .os,.btn-price-blue .os,.nav-cta .os{color:#fff}
+.btn-primary .os span,.btn-price-blue .os span,.nav-cta .os span{color:#082f49}
+.hero-badge .os,.hero-badge .os span{background:none;padding:0;border-radius:0;font-size:inherit}
+.hero-badge .os span{color:var(--blue-light)}
+
 /* NAV */
 nav{position:sticky;top:0;z-index:100;background:rgba(15,23,42,.92);backdrop-filter:blur(12px);border-bottom:1px solid var(--border);padding:0 28px}
 .nav-inner{max-width:1100px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;height:60px}
@@ -231,11 +239,11 @@ footer a{color:var(--blue);text-decoration:none}
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-badge"><span>NOUVEAU</span> OraScore v1.2 — Oracle 12.2 → 19c+</div>
+  <div class="hero-badge"><span>NOUVEAU</span> <span class="os">Ora<span>Score</span></span> v1.2 — Oracle 12.2 → 19c+</div>
   <h1>Audit de santé Oracle en <em>2 minutes</em>,<br>rapport professionnel inclus</h1>
   <p class="hero-sub">41 vérifications automatiques, un score sur 100 et la solution de chaque problème. Toutes vos bases en un coup d'œil, alertes Email/Teams/Slack. Lecture seule, rien à installer.</p>
   <div class="hero-btns">
-    <a href="https://gumroad.com/l/orascore" target="_blank" class="btn-primary">Obtenir OraScore Pro →</a>
+    <a href="https://gumroad.com/l/orascore" target="_blank" class="btn-primary"><span>Obtenir <span class="os">Ora<span>Score</span></span> Pro →</span></a>
     <a href="#early" class="btn-secondary">Programme Early Adopter (gratuit)</a>
   </div>
   <div class="hero-stats">
@@ -255,7 +263,7 @@ footer a{color:var(--blue);text-decoration:none}
     <div class="preview-inner">
       <div class="mini-hdr">
         <div>
-          <div class="mini-title">OraScore Pro — PROD_DB01 — Base de production</div>
+          <div class="mini-title"><span class="os">Ora<span>Score</span></span> Pro — PROD_DB01 — Base de production</div>
           <div class="mini-meta">Serveur : SRV-PROD-01 &nbsp;|&nbsp; Oracle 19.20.0 &nbsp;|&nbsp; PRIMARY &nbsp;|&nbsp; CDB + 3 PDB &nbsp;|&nbsp; 41 vérifications</div>
         </div>
         <div class="score-ring-mini">
@@ -477,7 +485,7 @@ footer a{color:var(--blue);text-decoration:none}
         </ul>
       </div>
     </div>
-    <div class="checks-count">OraScore Pro couvre <strong>41 checks</strong> — OraScore Lite en couvre 10 gratuitement, sans aucune option Oracle payante requise.</div>
+    <div class="checks-count"><span class="os">Ora<span>Score</span></span> Pro couvre <strong>41 checks</strong> — <span class="os">Ora<span>Score</span></span> Lite en couvre 10 gratuitement, sans aucune option Oracle payante requise.</div>
   </div>
 </section>
 
@@ -503,7 +511,7 @@ footer a{color:var(--blue);text-decoration:none}
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-title">Analyser</div>
-        <div class="step-desc">Le premier rapport s'ouvre automatiquement. Ensuite, OraScore analyse aux heures choisies et vous alerte en cas de problème.</div>
+        <div class="step-desc">Le premier rapport s'ouvre automatiquement. Ensuite, <span class="os">Ora<span>Score</span></span> analyse aux heures choisies et vous alerte en cas de problème.</div>
         <div class="step-code">Linux : ./orascore.sh --html</div>
       </div>
     </div>
@@ -515,7 +523,7 @@ footer a{color:var(--blue);text-decoration:none}
   <div class="section-inner">
     <div class="early-inner">
       <div class="early-badge">🎁 Programme Early Adopter — Places limitées</div>
-      <h2>20 licences OraScore Pro<br>offertes aux premiers DBA</h2>
+      <h2>20 licences <span class="os">Ora<span>Score</span></span> Pro<br>offertes aux premiers DBA</h2>
       <p style="color:var(--muted);margin-bottom:0">Je cherche 20 DBA Oracle qui veulent tester l'outil sur leurs bases réelles et me donner un retour honnête. En échange, licence Pro à vie — offerte.</p>
       <div class="seats-bar">
         <div class="seats-label"><span>Places utilisées</span><span>7 / 20</span></div>
@@ -537,14 +545,14 @@ footer a{color:var(--blue);text-decoration:none}
   <div class="section-inner">
     <div class="section-tag">Pourquoi ce prix</div>
     <h2>L'audit expert de toutes vos bases,<br>pour moins qu'une seule instance supervisée</h2>
-    <p class="section-sub">OraScore ne remplace pas un outil de supervision temps réel : il répond à une autre question — « qu'est-ce qui ne va pas, et comment le corriger ? ». Et il la pose à toutes vos bases, pour un seul abonnement.</p>
+    <p class="section-sub"><span class="os">Ora<span>Score</span></span> ne remplace pas un outil de supervision temps réel : il répond à une autre question — « qu'est-ce qui ne va pas, et comment le corriger ? ». Et il la pose à toutes vos bases, pour un seul abonnement.</p>
     <div class="cmp-wrap">
       <table class="cmp">
         <tr><th></th><th>Ce que vous obtenez</th><th>Mise en place</th><th>Coût indicatif</th></tr>
         <tr><td>Scripts SQL maison</td><td>Des résultats bruts à interpréter, sans score ni solution</td><td>À écrire et maintenir</td><td>Gratuit… en apparence</td></tr>
         <tr><td>Audit par un consultant</td><td>Un rapport expert, à une date donnée</td><td>1 à 3 jours de prestation</td><td>1 500 à 3 000 € par audit</td></tr>
         <tr><td>Outils de supervision</td><td>Temps réel, historique, graphiques</td><td>Serveur dédié, déploiement, paramétrage</td><td>≈ 600 € à 2 000 € et plus <b>par instance et par an</b> — chaque PDB comptée</td></tr>
-        <tr class="us"><td>OraScore Pro</td><td>Score, diagnostic et commandes de correction, vue d'ensemble, alertes</td><td>2 minutes, rien à installer</td><td><b>249 € par an — toutes vos bases</b></td></tr>
+        <tr class="us"><td><span class="os">Ora<span>Score</span></span> Pro</td><td>Score, diagnostic et commandes de correction, vue d'ensemble, alertes</td><td>2 minutes, rien à installer</td><td><b>249 € par an — toutes vos bases</b></td></tr>
       </table>
     </div>
     <div class="calc-grid">
@@ -555,7 +563,7 @@ footer a{color:var(--blue);text-decoration:none}
         <div class="calc-total"><span>Par an</span><span class="hi">≈ 3 000 €</span></div>
       </div>
       <div class="calc">
-        <div class="calc-title">Même périmètre avec OraScore Pro</div>
+        <div class="calc-title">Même périmètre avec <span class="os">Ora<span>Score</span></span> Pro</div>
         <div class="calc-line"><span>Bases analysées</span><b>illimitées</b></div>
         <div class="calc-line"><span>Mises à jour et support</span><b>inclus</b></div>
         <div class="calc-total"><span>Par an</span><span class="lo">249 €</span></div>
@@ -563,11 +571,11 @@ footer a{color:var(--blue);text-decoration:none}
       <div class="calc">
         <div class="calc-title">Face à l'audit manuel</div>
         <div class="calc-line"><span>Audit complet à la main</span><b>3 à 4 h de DBA</b></div>
-        <div class="calc-line"><span>Avec OraScore, à chaque analyse planifiée</span><b>&lt; 2 min</b></div>
+        <div class="calc-line"><span>Avec <span class="os">Ora<span>Score</span></span>, à chaque analyse planifiée</span><b>&lt; 2 min</b></div>
         <div class="calc-total"><span>Rentabilisé</span><span class="lo">dès le 1<sup>er</sup> audit</span></div>
       </div>
     </div>
-    <p class="cmp-note">Ordres de grandeur constatés sur les tarifs publics du marché en octobre 2026, hors remises et options ; ils varient selon l'éditeur et le contrat. Les outils de supervision offrent des fonctions temps réel qu'OraScore ne prétend pas remplacer.</p>
+    <p class="cmp-note">Ordres de grandeur constatés sur les tarifs publics du marché en octobre 2026, hors remises et options ; ils varient selon l'éditeur et le contrat. Les outils de supervision offrent des fonctions temps réel qu'<span class="os">Ora<span>Score</span></span> ne prétend pas remplacer.</p>
   </div>
 </section>
 
@@ -581,7 +589,7 @@ footer a{color:var(--blue);text-decoration:none}
       <div class="price-card">
         <div class="price-name">Lite</div>
         <div><span class="price-amount">0€</span><span class="price-period">pour toujours</span></div>
-        <div class="price-desc">10 checks essentiels. Idéal pour découvrir OraScore et vérifier les métriques critiques rapidement.</div>
+        <div class="price-desc">10 checks essentiels. Idéal pour découvrir <span class="os">Ora<span>Score</span></span> et vérifier les métriques critiques rapidement.</div>
         <ul class="price-features">
           <li>10 vérifications essentielles</li>
           <li>Rapport HTML professionnel</li>
@@ -610,7 +618,7 @@ footer a{color:var(--blue);text-decoration:none}
           <li>Mises à jour et support par e-mail inclus</li>
           <li>Renouvelé chaque année, résiliable à tout moment</li>
         </ul>
-        <a href="https://gumroad.com/l/orascore" target="_blank" class="btn-price btn-price-blue">Obtenir OraScore Pro →</a>
+        <a href="https://gumroad.com/l/orascore" target="_blank" class="btn-price btn-price-blue">Obtenir <span class="os">Ora<span>Score</span></span> Pro →</a>
         <div style="font-size:12px;color:var(--dim);margin-top:12px">Sans renouvellement, votre version continue de fonctionner — seules les mises à jour et le support s'arrêtent.</div>
       </div>
     </div>
@@ -625,7 +633,7 @@ footer a{color:var(--blue);text-decoration:none}
       <div>
         <div class="author-name">Mohamed Benslimene</div>
         <div class="author-title">DBA Oracle Senior — Certifié OCP</div>
-        <div class="author-bio">14 ans de gestion de bases Oracle en production dans des environnements critiques. Expert Oracle Forms/Reports, Shell, SQL. OraScore est l'outil que j'aurais voulu avoir dès le premier jour — un audit complet, lisible, actionnable, qui tourne sans dépendances et fonctionne même sur les réseaux les plus fermés.</div>
+        <div class="author-bio">14 ans de gestion de bases Oracle en production dans des environnements critiques. Expert Oracle Forms/Reports, Shell, SQL. <span class="os">Ora<span>Score</span></span> est l'outil que j'aurais voulu avoir dès le premier jour — un audit complet, lisible, actionnable, qui tourne sans dépendances et fonctionne même sur les réseaux les plus fermés.</div>
         <div class="author-badges">
           <span class="author-badge">OCP Oracle</span>
           <span class="author-badge">14 ans PROD</span>
@@ -642,12 +650,12 @@ footer a{color:var(--blue);text-decoration:none}
 <!-- FOOTER -->
 <footer>
   <div style="margin-bottom:10px">
-    <strong style="color:var(--text)">OraScore</strong> &nbsp;|&nbsp;
+    <span class="os">Ora<span>Score</span></span> &nbsp;|&nbsp;
     <a href="https://gumroad.com/l/orascore" target="_blank">Obtenir Pro</a> &nbsp;|&nbsp;
     <a href="#early">Programme Early Adopter</a> &nbsp;|&nbsp;
     <a href="mailto:mbenslimene@gmail.com">Contact</a>
   </div>
-  <div>© 2026 Mohamed Benslimene — OraScore est un outil indépendant, non affilié à Oracle Corporation. Oracle est une marque déposée d'Oracle Corporation et/ou de ses filiales.</div>
+  <div>© 2026 Mohamed Benslimene — <span class="os">Ora<span>Score</span></span> est un outil indépendant, non affilié à Oracle Corporation. Oracle est une marque déposée d'Oracle Corporation et/ou de ses filiales.</div>
 </footer>
 
 <script>
