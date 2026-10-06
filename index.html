@@ -3,11 +3,11 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OraScore — Health Check Oracle 19c en 2 minutes</title>
-<meta name="description" content="OraScore analyse votre base Oracle en 41 vérifications automatiques et génère un rapport HTML professionnel avec score, alertes et solutions. Aucun Oracle Client requis.">
+<title>OraScore — Audit de santé Oracle en 2 minutes</title>
+<meta name="description" content="OraScore audite toutes vos bases Oracle (12.2 à 19c+) en 41 vérifications automatiques : score, solutions avec commandes, vue d'ensemble, alertes. Lecture seule, rien à installer.">
 <meta name="keywords" content="Oracle DBA, health check Oracle, Oracle 19c monitoring, Oracle audit, DBA tool, Oracle performance">
-<meta property="og:title" content="OraScore — Health Check Oracle 19c en 2 minutes">
-<meta property="og:description" content="41 vérifications automatiques, score 0-100, alertes Email/Slack/Teams. Aucun Oracle Client requis.">
+<meta property="og:title" content="OraScore — Audit de santé Oracle en 2 minutes">
+<meta property="og:description" content="41 vérifications automatiques, score 0-100, solutions, alertes Email/Slack/Teams. Toutes vos bases pour le prix d'une licence.">
 <meta property="og:type" content="website">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -170,6 +170,25 @@ h2{font-size:clamp(26px,3.5vw,38px);font-weight:800;color:#f1f5f9;line-height:1.
 .btn-price-blue{background:var(--blue);color:#fff}
 .btn-price-blue:hover{background:#0e7490}
 
+/* WHY PRICE */
+.cmp-wrap{overflow-x:auto;border:1px solid var(--border);border-radius:12px}
+.cmp{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+.cmp th,.cmp td{padding:12px 16px;text-align:left;border-bottom:1px solid var(--border);vertical-align:top}
+.cmp th{background:var(--bg2);color:var(--muted);font-size:11px;text-transform:uppercase;letter-spacing:.5px}
+.cmp td{color:var(--muted)}
+.cmp td:first-child{color:#f1f5f9;font-weight:600;white-space:nowrap}
+.cmp tr.us td{background:rgba(8,145,178,.08);color:var(--text)}
+.cmp tr.us td:first-child{color:var(--blue-light)}
+.cmp tr:last-child td{border-bottom:none}
+.calc-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:28px}
+.calc{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:20px 22px}
+.calc-title{font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:10px}
+.calc-line{display:flex;justify-content:space-between;font-size:13px;color:var(--muted);padding:3px 0}
+.calc-line b{color:#f1f5f9}
+.calc-total{display:flex;justify-content:space-between;font-size:15px;font-weight:800;margin-top:8px;padding-top:8px;border-top:1px solid var(--border)}
+.calc-total .hi{color:var(--red-light)}.calc-total .lo{color:var(--green-light)}
+.cmp-note{font-size:12px;color:var(--dim);margin-top:18px}
+
 /* AUTHOR */
 .author-bg{background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
 .author-inner{max-width:720px;margin:0 auto;display:flex;align-items:center;gap:32px;flex-wrap:wrap}
@@ -203,6 +222,7 @@ footer a{color:var(--blue);text-decoration:none}
       <a href="#features">Fonctionnalités</a>
       <a href="#checks">41 Checks</a>
       <a href="#early">Programme Beta</a>
+      <a href="#pourquoi">Pourquoi ce prix</a>
       <a href="#pricing">Tarifs</a>
       <a href="https://gumroad.com/l/orascore" target="_blank" class="nav-cta">Obtenir Pro →</a>
     </div>
@@ -211,9 +231,9 @@ footer a{color:var(--blue);text-decoration:none}
 
 <!-- HERO -->
 <section class="hero">
-  <div class="hero-badge"><span>NOUVEAU</span> OraScore v1.0 — Oracle 19c+</div>
-  <h1>Health Check Oracle en <em>2 minutes</em>,<br>rapport professionnel inclus</h1>
-  <p class="hero-sub">41 vérifications automatiques. Score 0-100. Alertes Email/Slack/Teams. Aucun Oracle Client requis. Rapports HTML 100% offline.</p>
+  <div class="hero-badge"><span>NOUVEAU</span> OraScore v1.2 — Oracle 12.2 → 19c+</div>
+  <h1>Audit de santé Oracle en <em>2 minutes</em>,<br>rapport professionnel inclus</h1>
+  <p class="hero-sub">41 vérifications automatiques, un score sur 100 et la solution de chaque problème. Toutes vos bases en un coup d'œil, alertes Email/Teams/Slack. Lecture seule, rien à installer.</p>
   <div class="hero-btns">
     <a href="https://gumroad.com/l/orascore" target="_blank" class="btn-primary">Obtenir OraScore Pro →</a>
     <a href="#early" class="btn-secondary">Programme Early Adopter (gratuit)</a>
@@ -222,27 +242,28 @@ footer a{color:var(--blue);text-decoration:none}
     <div class="stat"><div class="stat-num">41</div><div class="stat-label">Vérifications Oracle</div></div>
     <div class="stat"><div class="stat-num">9</div><div class="stat-label">Catégories couvertes</div></div>
     <div class="stat"><div class="stat-num">&lt;2min</div><div class="stat-label">Temps d'analyse</div></div>
-    <div class="stat"><div class="stat-num">0</div><div class="stat-label">Dépendances client Oracle</div></div>
+    <div class="stat"><div class="stat-num">0</div><div class="stat-label">Installation requise</div></div>
+    <div class="stat"><div class="stat-num">∞</div><div class="stat-label">Bases par licence</div></div>
   </div>
 
   <!-- MINI REPORT PREVIEW -->
   <div class="preview-wrap">
     <div class="preview-bar">
       <span class="dot dot-r"></span><span class="dot dot-y"></span><span class="dot dot-g"></span>
-      <span class="preview-url">orascore_PROD_20260717_060012.html</span>
+      <span class="preview-url">orascore_pro_prod_db01_DERNIER.html</span>
     </div>
     <div class="preview-inner">
       <div class="mini-hdr">
         <div>
           <div class="mini-title">OraScore Pro — PROD_DB01 — Base de production</div>
-          <div class="mini-meta">Host: srv-prod-01 &nbsp;|&nbsp; Oracle 19.20.0 &nbsp;|&nbsp; PRIMARY &nbsp;|&nbsp; 41 vérifications &nbsp;|&nbsp; 1.8s</div>
+          <div class="mini-meta">Serveur : SRV-PROD-01 &nbsp;|&nbsp; Oracle 19.20.0 &nbsp;|&nbsp; PRIMARY &nbsp;|&nbsp; CDB + 3 PDB &nbsp;|&nbsp; 41 vérifications</div>
         </div>
         <div class="score-ring-mini">
           <div>
             <div class="score-num">87</div>
             <div class="score-label">/100</div>
           </div>
-          <span class="badge-critical-mini">✓ GOOD</span>
+          <span class="badge-critical-mini" style="background:rgba(217,119,6,.18);color:#fbbf24">⚠ WARNING</span>
         </div>
       </div>
       <div class="mini-grid">
@@ -280,7 +301,7 @@ footer a{color:var(--blue);text-decoration:none}
   <div class="section-inner">
     <div class="section-tag">Le problème</div>
     <h2>Le DBA qui part en weekend<br>ne dort pas toujours bien</h2>
-    <p class="section-sub">Surveiller une base Oracle en production, c'est jongler avec des dizaines de vues V$, des scripts écrits en urgence, et des dashboards payants à 5 000€/an.</p>
+    <p class="section-sub">Surveiller une base Oracle en production, c'est jongler avec des dizaines de vues V$, des scripts écrits en urgence, et des outils de supervision facturés par instance — chaque PDB comptée.</p>
     <div class="problem-grid">
       <div class="problem-card">
         <div class="problem-icon">😰</div>
@@ -315,28 +336,28 @@ footer a{color:var(--blue);text-decoration:none}
     <div class="features-grid">
       <div class="feat-card">
         <div class="feat-icon blue">📊</div>
-        <div class="feat-title">41 checks Oracle 19c+</div>
-        <div class="feat-desc">Instance, Stockage, Performance, Mémoire, Backup, DataGuard, Sécurité, Objets, OS. Toutes les dimensions critiques couvertes.</div>
+        <div class="feat-title">41 checks Oracle 12.2 → 19c+</div>
+        <div class="feat-desc">Instance, Stockage, Performance, Mémoire, Backup, Data Guard, Sécurité, Objets, OS. Toutes les dimensions critiques couvertes. Lecture seule : aucune modification de vos bases.</div>
       </div>
       <div class="feat-card">
         <div class="feat-icon green">⚡</div>
-        <div class="feat-title">Aucun Oracle Client requis</div>
-        <div class="feat-desc">Mode thin Python pur — zéro installation Oracle. Fonctionne là où rien d'autre ne fonctionne : PC portable, serveur de build, pipeline CI.</div>
+        <div class="feat-title">Rien à installer</div>
+        <div class="feat-desc">Windows : on décompresse, on double-clique, un assistant guide tout — ni droits administrateur, ni internet, ni Oracle Client. Linux : installation hors-ligne en une commande.</div>
       </div>
       <div class="feat-card">
         <div class="feat-icon blue">📄</div>
-        <div class="feat-title">Rapports HTML 100% offline</div>
-        <div class="feat-desc">Un seul fichier HTML auto-contenu. Pas de CDN, pas d'internet requis. Parfait pour les réseaux sécurisés et les audits en air-gap.</div>
+        <div class="feat-title">Vue d'ensemble + évolution</div>
+        <div class="feat-desc">Une page pour toutes vos bases, regroupées par serveur (CDB et PDB ensemble). Chaque rapport montre l'évolution depuis le précédent : score, améliorations, dégradations. HTML 100% offline.</div>
       </div>
       <div class="feat-card">
         <div class="feat-icon orange">🔔</div>
         <div class="feat-title">Alertes multi-canaux</div>
-        <div class="feat-desc">Email (SMTP), Slack, Microsoft Teams, Webhook. Anti-spam intégré avec cooldown configurable. Détection automatique des nouveaux CRITICAL.</div>
+        <div class="feat-desc">Email (relais SMTP ou messagerie du serveur Linux), Microsoft Teams, Slack. Analyses planifiées aux heures de votre choix, anti-spam intégré, test d'envoi avec diagnostic en clair.</div>
       </div>
       <div class="feat-card">
         <div class="feat-icon green">🗄️</div>
         <div class="feat-title">Multi-bases de données</div>
-        <div class="feat-desc">Gérez toutes vos instances Oracle en un seul outil. Seuils personnalisables par base. Support CDB/PDB, RAC, Data Guard, ASM.</div>
+        <div class="feat-desc">Toutes vos bases, sans limite, avec une seule licence. CDB/PDB, RAC, ASM et Data Guard détectés automatiquement ; toutes les PDB analysées en une seule connexion.</div>
       </div>
       <div class="feat-card">
         <div class="feat-icon blue">🎯</div>
@@ -351,12 +372,12 @@ footer a{color:var(--blue);text-decoration:none}
       <div class="feat-card">
         <div class="feat-icon purple">🔑</div>
         <div class="feat-title">Oracle Wallet + env vars</div>
-        <div class="feat-desc">Pas de mot de passe en clair. Supporte Oracle Wallet, variables d'environnement, et Oracle Cloud (OCI). Compatible pipelines CI/CD.</div>
+        <div class="feat-desc">Pas de mot de passe en clair obligatoire : Oracle Wallet ou variables d'environnement. Compte dédié en lecture seule, commandes de création fournies.</div>
       </div>
       <div class="feat-card">
         <div class="feat-icon green">📋</div>
         <div class="feat-title">Conscience des licences</div>
-        <div class="feat-desc">Les checks AWR/ASH (Diagnostics Pack) sont optionnels et désactivables. OraScore respecte votre périmètre de licences Oracle.</div>
+        <div class="feat-desc">Sans Diagnostics Pack déclaré, aucune vue AWR/ASH n'est interrogée : des variantes sans licence prennent le relais. Pas de mauvaise surprise lors d'un audit Oracle.</div>
       </div>
     </div>
   </div>
@@ -465,25 +486,25 @@ footer a{color:var(--blue);text-decoration:none}
   <div class="section-inner">
     <div class="section-tag">Comment ça marche</div>
     <h2>Opérationnel en 3 étapes</h2>
-    <p class="section-sub">Installation en 2 minutes. Aucun Oracle Client. Aucune dépendance externe.</p>
+    <p class="section-sub">Installation en 2 minutes. Python et toutes les dépendances sont inclus.</p>
     <div class="steps">
       <div class="step">
         <div class="step-num">1</div>
-        <div class="step-title">Installer</div>
-        <div class="step-desc">Python 3.9+ requis. Un script d'installation automatique configure tout.</div>
-        <div class="step-code">pip install oracledb rich pyyaml jinja2</div>
+        <div class="step-title">Décompresser</div>
+        <div class="step-desc">Où vous voulez. Ni droits administrateur, ni internet, ni Oracle Client.</div>
+        <div class="step-code">C:\OraScore\</div>
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <div class="step-title">Configurer</div>
-        <div class="step-desc">Renseigner host, port, service_name et credentials dans <code>config/databases.yaml</code>. GUI Tkinter disponible.</div>
-        <div class="step-code">python hc_config.py</div>
+        <div class="step-title">Lancer l'assistant</div>
+        <div class="step-desc">Vos bases, le test de connexion, les heures d'analyse et les alertes : tout se saisit à l'écran.</div>
+        <div class="step-code">1_DEMARRER_OraScore.bat</div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
         <div class="step-title">Analyser</div>
-        <div class="step-desc">Lancer l'analyse. Le rapport HTML s'ouvre automatiquement. Planifier via cron ou Task Scheduler pour une surveillance continue.</div>
-        <div class="step-code">python hc_collector.py --html --alert</div>
+        <div class="step-desc">Le premier rapport s'ouvre automatiquement. Ensuite, OraScore analyse aux heures choisies et vous alerte en cas de problème.</div>
+        <div class="step-code">Linux : ./orascore.sh --html</div>
       </div>
     </div>
   </div>
@@ -508,6 +529,45 @@ footer a{color:var(--blue);text-decoration:none}
       </div>
       <div class="early-note" id="early-msg">Réponse sous 24h. Aucun spam — juste le lien de téléchargement et les instructions.</div>
     </div>
+  </div>
+</section>
+
+<!-- WHY THIS PRICE -->
+<section id="pourquoi" style="background:var(--bg2);border-top:1px solid var(--border);border-bottom:1px solid var(--border)">
+  <div class="section-inner">
+    <div class="section-tag">Pourquoi ce prix</div>
+    <h2>L'audit expert de toutes vos bases,<br>pour moins qu'une seule instance supervisée</h2>
+    <p class="section-sub">OraScore ne remplace pas un outil de supervision temps réel : il répond à une autre question — « qu'est-ce qui ne va pas, et comment le corriger ? ». Et il la pose à toutes vos bases, pour un prix unique.</p>
+    <div class="cmp-wrap">
+      <table class="cmp">
+        <tr><th></th><th>Ce que vous obtenez</th><th>Mise en place</th><th>Coût indicatif</th></tr>
+        <tr><td>Scripts SQL maison</td><td>Des résultats bruts à interpréter, sans score ni solution</td><td>À écrire et maintenir</td><td>Gratuit… en apparence</td></tr>
+        <tr><td>Audit par un consultant</td><td>Un rapport expert, à une date donnée</td><td>1 à 3 jours de prestation</td><td>1 500 à 3 000 € par audit</td></tr>
+        <tr><td>Outils de supervision</td><td>Temps réel, historique, graphiques</td><td>Serveur dédié, déploiement, paramétrage</td><td>≈ 600 € à 2 000 € et plus <b>par instance et par an</b> — chaque PDB comptée</td></tr>
+        <tr class="us"><td>OraScore Pro</td><td>Score, diagnostic et commandes de correction, vue d'ensemble, alertes</td><td>2 minutes, rien à installer</td><td><b>79 € — toutes vos bases</b></td></tr>
+      </table>
+    </div>
+    <div class="calc-grid">
+      <div class="calc">
+        <div class="calc-title">Exemple : 1 CDB + 4 PDB</div>
+        <div class="calc-line"><span>Supervision facturée par instance</span><b>5 licences</b></div>
+        <div class="calc-line"><span>Tarif indicatif</span><b>≈ 600 € / instance / an</b></div>
+        <div class="calc-total"><span>Par an</span><span class="hi">≈ 3 000 €</span></div>
+      </div>
+      <div class="calc">
+        <div class="calc-title">Même périmètre avec OraScore Pro</div>
+        <div class="calc-line"><span>Bases analysées</span><b>illimitées</b></div>
+        <div class="calc-line"><span>Mises à jour incluses</span><b>12 mois</b></div>
+        <div class="calc-total"><span>Licence</span><span class="lo">79 €</span></div>
+      </div>
+      <div class="calc">
+        <div class="calc-title">Face à l'audit manuel</div>
+        <div class="calc-line"><span>Audit complet à la main</span><b>3 à 4 h de DBA</b></div>
+        <div class="calc-line"><span>Avec OraScore, à chaque analyse planifiée</span><b>&lt; 2 min</b></div>
+        <div class="calc-total"><span>Rentabilisé</span><span class="lo">dès le 1<sup>er</sup> audit</span></div>
+      </div>
+    </div>
+    <p class="cmp-note">Ordres de grandeur constatés sur les tarifs publics du marché en octobre 2026, hors remises et options ; ils varient selon l'éditeur et le contrat. Les outils de supervision offrent des fonctions temps réel qu'OraScore ne prétend pas remplacer.</p>
   </div>
 </section>
 
@@ -537,16 +597,16 @@ footer a{color:var(--blue);text-decoration:none}
       <div class="price-card featured">
         <div class="price-tag">⭐ Recommandé</div>
         <div class="price-name">Pro</div>
-        <div><span class="price-amount">79€</span><span class="price-period">/ licence</span></div>
+        <div><span class="price-amount">79€</span><span class="price-period">/ licence · bases illimitées</span></div>
         <div class="price-desc">41 checks complets. Pour les DBA qui veulent une surveillance sérieuse et des rapports prêts à partager.</div>
         <ul class="price-features">
-          <li>41 vérifications Oracle 19c+</li>
-          <li>Rapport HTML professionnel</li>
-          <li>Score 0-100 + solutions incluses</li>
-          <li>Multi-bases de données illimité</li>
-          <li>Alertes Email/Slack/Teams/Webhook</li>
-          <li>Performance, Mémoire, DataGuard, RAC</li>
-          <li>GUI configuration Tkinter</li>
+          <li>41 vérifications Oracle 12.2 → 19c+</li>
+          <li>Score 0-100 + solutions avec commandes</li>
+          <li>Bases illimitées, CDB/PDB, RAC, ASM, Data Guard</li>
+          <li>Vue d'ensemble + évolution entre rapports</li>
+          <li>Analyses planifiées + alertes Email/Teams/Slack</li>
+          <li>Windows (rien à installer) et Linux hors-ligne</li>
+          <li>Licence nominative à votre nom</li>
           <li>Mises à jour 12 mois incluses</li>
         </ul>
         <a href="https://gumroad.com/l/orascore" target="_blank" class="btn-price btn-price-blue">Obtenir OraScore Pro →</a>
@@ -563,7 +623,7 @@ footer a{color:var(--blue);text-decoration:none}
       <div>
         <div class="author-name">Mohamed Benslimene</div>
         <div class="author-title">DBA Oracle Senior — Certifié OCP</div>
-        <div class="author-bio">14 ans de gestion de bases Oracle en production dans des environnements critiques. Expert Oracle Forms/Reports, Shell, SQL. OraScore est l'outil que j'aurais voulu avoir dès le premier jour — un health check complet, lisible, actionnable, qui tourne sans dépendances et fonctionne même sur les réseaux les plus fermés.</div>
+        <div class="author-bio">14 ans de gestion de bases Oracle en production dans des environnements critiques. Expert Oracle Forms/Reports, Shell, SQL. OraScore est l'outil que j'aurais voulu avoir dès le premier jour — un audit complet, lisible, actionnable, qui tourne sans dépendances et fonctionne même sur les réseaux les plus fermés.</div>
         <div class="author-badges">
           <span class="author-badge">OCP Oracle</span>
           <span class="author-badge">14 ans PROD</span>
@@ -585,7 +645,7 @@ footer a{color:var(--blue);text-decoration:none}
     <a href="#early">Programme Early Adopter</a> &nbsp;|&nbsp;
     <a href="mailto:mbenslimene@gmail.com">Contact</a>
   </div>
-  <div>© 2026 Mohamed Benslimene — OraScore est un outil indépendant, non affilié à Oracle Corporation.</div>
+  <div>© 2026 Mohamed Benslimene — OraScore est un outil indépendant, non affilié à Oracle Corporation. Oracle est une marque déposée d'Oracle Corporation et/ou de ses filiales.</div>
 </footer>
 
 <script>
