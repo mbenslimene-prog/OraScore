@@ -229,7 +229,7 @@ footer a{color:#38bdf8;text-decoration:none}
     <div class="nav-links">
       <a href="#features">Fonctionnalités</a>
       <a href="#checks">41 Checks</a>
-      <a href="#early">Programme Beta</a>
+      <a href="#early">Early Adopter</a>
       <a href="#pourquoi">Pourquoi ce prix</a>
       <a href="#pricing">Tarifs</a>
       <a href="https://gumroad.com/l/orascore" target="_blank" class="nav-cta">Obtenir Pro →</a>
@@ -523,19 +523,17 @@ footer a{color:#38bdf8;text-decoration:none}
   <div class="section-inner">
     <div class="early-inner">
       <div class="early-badge">🎁 Programme Early Adopter — Places limitées</div>
-      <h2>20 licences <span class="os">Ora<span>Score</span></span> Pro<br>offertes aux premiers DBA</h2>
-      <p style="color:var(--muted);margin-bottom:0">Je cherche 20 DBA Oracle qui veulent tester l'outil sur leurs bases réelles et me donner un retour honnête. En échange, licence Pro à vie — offerte.</p>
-      <div class="seats-bar">
-        <div class="seats-label"><span>Places utilisées</span><span>7 / 20</span></div>
-        <div class="seats-track"><div class="seats-fill"></div></div>
-        <div class="seats-left">⚡ 13 places restantes</div>
-      </div>
+      <h2>10 licences <span class="os">Ora<span>Score</span></span> Équipe<br>offertes à vie aux premiers DBA</h2>
+      <p style="color:var(--muted);margin-bottom:0">Je cherche 10 DBA Oracle qui veulent tester l'outil sur leurs bases réelles et me donner un retour honnête. En échange, une licence Équipe (jusqu'à 25 bases) à vie — offerte.</p>
       <p style="font-size:13.5px;color:var(--muted);margin-bottom:0">Ce que je demande en échange : tester sur au moins une base Oracle réelle et partager un retour (bugs trouvés, suggestions, témoignage si satisfait).</p>
-      <div class="early-form">
-        <input class="early-input" type="email" placeholder="Votre email professionnel" id="early-email">
-        <button class="btn-gold" onclick="submitEarly()">Demander ma licence gratuite →</button>
-      </div>
-      <div class="early-note" id="early-msg">Réponse sous 24h. Aucun spam — juste le lien de téléchargement et les instructions.</div>
+      <form class="early-form" id="early-form" onsubmit="return submitEarly(event)">
+        <input class="early-input" type="email" required maxlength="200" placeholder="Votre email professionnel" id="early-email" autocomplete="email">
+        <input class="early-input" type="text" maxlength="200" placeholder="Votre environnement (ex. 19c, RAC, 12 bases) — facultatif" id="early-env">
+        <!-- champ piège pour les robots : invisible pour un visiteur -->
+        <input type="text" id="early-site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
+        <button class="btn-gold" type="submit" id="early-btn">Demander ma licence gratuite →</button>
+      </form>
+      <div class="early-note" id="early-msg" aria-live="polite">Réponse sous 24h. Aucun spam — juste le lien de téléchargement et les instructions.</div>
     </div>
   </div>
 </section>
@@ -659,18 +657,37 @@ footer a{color:#38bdf8;text-decoration:none}
 </footer>
 
 <script>
-function submitEarly() {
+// Inscription Early Adopter : envoyée par le site lui-même (fonction /api/early, e-mail via Brevo),
+// sans dépendre du logiciel de messagerie du visiteur
+async function submitEarly(ev) {
+  ev.preventDefault();
   const email = document.getElementById('early-email').value.trim();
+  const env = document.getElementById('early-env').value.trim();
+  const site = document.getElementById('early-site').value;
   const msg = document.getElementById('early-msg');
-  if (!email || !email.includes('@')) {
+  const btn = document.getElementById('early-btn');
+  if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     msg.textContent = '⚠ Veuillez entrer une adresse email valide.';
     msg.style.color = '#f59e0b';
-    return;
+    return false;
   }
-  // Redirect to mailto with pre-filled subject
-  window.location.href = 'mailto:support@orascore.io?subject=OraScore%20Early%20Adopter%20-%20' + encodeURIComponent(email) + '&body=Bonjour%2C%0A%0AJe%20souhaite%20participer%20au%20programme%20early%20adopter%20OraScore%20Pro.%0A%0AMon%20email%20%3A%20' + encodeURIComponent(email) + '%0A%0AEnvironnement%20Oracle%20%3A%20(version%2C%20nb%20de%20bases)%0A';
-  msg.textContent = '✓ Votre client email s\'ouvre — envoyez le message pour confirmer votre participation.';
-  msg.style.color = '#86efac';
+  btn.disabled = true;
+  msg.textContent = 'Envoi en cours…';
+  msg.style.color = '';
+  try {
+    const r = await fetch('/api/early', {method: 'POST', headers: {'Content-Type': 'application/json'},
+                                         body: JSON.stringify({email, env, site})});
+    if (!r.ok) throw new Error(r.status);
+    msg.textContent = '✓ Demande reçue. Un e-mail de confirmation vient de vous être envoyé (pensez aux indésirables) ; réponse sous 24h.';
+    msg.style.color = '#86efac';
+    document.getElementById('early-form').reset();
+  } catch (e) {
+    msg.innerHTML = "⚠ L'envoi a échoué. Écrivez-nous directement à <a href=\"mailto:support@orascore.io\">support@orascore.io</a>.";
+    msg.style.color = '#f59e0b';
+  } finally {
+    btn.disabled = false;
+  }
+  return false;
 }
 </script>
 
