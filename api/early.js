@@ -55,15 +55,13 @@ Répondre à ce message répond directement au demandeur.`,
       replyTo: { email: SUPPORT },
       subject: "OraScore : votre demande Early Adopter est bien reçue",
       // version texte en plus du HTML : un message HTML seul est mal noté par les filtres (Yahoo)
-      textContent: "Bonjour,
+      textContent: `Bonjour,
 
-Merci pour votre intérêt pour OraScore. Votre demande de licence Early Adopter est bien reçue : "
-        + "vous recevrez sous 24 h le lien de téléchargement et les instructions.
+Merci pour votre intérêt pour OraScore. Votre demande de licence Early Adopter est bien reçue : vous recevrez sous 24 h le lien de téléchargement et les instructions.
 
-"
-        + "Pour toute question, répondez simplement à cet e-mail.
+Pour toute question, répondez simplement à cet e-mail.
 
-L'équipe OraScore — https://orascore.io",
+L'équipe OraScore — https://orascore.io`,
       htmlContent: `<p>Bonjour,</p>
         <p>Merci pour votre intérêt pour OraScore. Votre demande de licence Early Adopter est bien reçue :
         vous recevrez sous 24 h le lien de téléchargement et les instructions.</p>
