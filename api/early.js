@@ -40,6 +40,11 @@ async function handler(req, res) {
       to: [{ email: SUPPORT }],
       replyTo: { email },
       subject: `Early Adopter : ${email}`,
+      textContent: `Nouvelle demande Early Adopter.
+E-mail : ${email}
+Environnement : ${env || "non précisé"}
+
+Répondre à ce message répond directement au demandeur.`,
       htmlContent: `<p>Nouvelle demande Early Adopter.</p>
         <p><b>E-mail :</b> ${esc(email)}<br><b>Environnement :</b> ${esc(env || "non précisé")}</p>
         <p>Répondre à ce message répond directement au demandeur.</p>`,
@@ -49,6 +54,16 @@ async function handler(req, res) {
       to: [{ email }],
       replyTo: { email: SUPPORT },
       subject: "OraScore : votre demande Early Adopter est bien reçue",
+      // version texte en plus du HTML : un message HTML seul est mal noté par les filtres (Yahoo)
+      textContent: "Bonjour,
+
+Merci pour votre intérêt pour OraScore. Votre demande de licence Early Adopter est bien reçue : "
+        + "vous recevrez sous 24 h le lien de téléchargement et les instructions.
+
+"
+        + "Pour toute question, répondez simplement à cet e-mail.
+
+L'équipe OraScore — https://orascore.io",
       htmlContent: `<p>Bonjour,</p>
         <p>Merci pour votre intérêt pour OraScore. Votre demande de licence Early Adopter est bien reçue :
         vous recevrez sous 24 h le lien de téléchargement et les instructions.</p>
