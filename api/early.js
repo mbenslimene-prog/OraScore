@@ -3,6 +3,9 @@
 //   1. la demande, à support@orascore.io (réponse directe au visiteur grâce à replyTo) ;
 //   2. un accusé de réception au visiteur.
 // La clé n'est jamais dans le code : variable d'environnement BREVO_API_KEY, réglée dans Vercel.
+// Chaque demande est aussi enregistrée dans Supabase (tables candidatures + historique) si
+// SUPABASE_URL et SUPABASE_SERVICE_ROLE_KEY sont réglées ; si la base ne répond pas, les e-mails
+// partent quand même : aucune demande n'est perdue.
 
 const SUPPORT = "support@orascore.io";
 const EMAIL_RE = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/;
@@ -17,6 +20,29 @@ const choix = (champ, v) => (CHOIX[champ].includes(String(v)) ? String(v) : "non
 
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+
+async function saveRequest(row) {
+  const url = process.env.SUPABASE_URL, key = process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (!url || !key) return null;
+  // clé « sb_secret_… » (nouveau format) : en-tête apikey seul ; ancienne clé JWT « eyJ… » : aussi en Bearer
+  const headers = { apikey: key, "content-type": "application/json",
+                    ...(key.startsWith("eyJ") ? { Authorization: `Bearer ${key}` } : {}) };
+  try {
+    const r = await fetch(`${url.replace(/\/$/, "")}/rest/v1/candidatures`, {
+      method: "POST", headers: { ...headers, Prefer: "return=representation" }, body: JSON.stringify(row),
+    });
+    if (!r.ok) throw new Error(`Supabase ${r.status}`);
+    const [cand] = await r.json();
+    await fetch(`${url.replace(/\/$/, "")}/rest/v1/historique`, {
+      method: "POST", headers,
+      body: JSON.stringify({ candidature_id: cand.id, evenement: "demande", details: "Formulaire du site" }),
+    });
+    return cand.id;
+  } catch (e) {
+    console.error("early (base):", e.message);   // jamais la clé ni le contenu
+    return null;
+  }
+}
 
 async function sendMail(apiKey, payload) {
   const r = await fetch("https://api.brevo.com/v3/smtp/email", {
@@ -44,12 +70,14 @@ async function handler(req, res) {
   if (body.site) return res.status(200).json({ ok: true });
   if (!EMAIL_RE.test(email)) return res.status(400).json({ ok: false, error: "email" });
 
+  const candId = await saveRequest({ email, type_base: profil.type, os: profil.os, version: profil.version,
+                                    precisions: env || null });
   try {
     await sendMail(apiKey, {
       sender: { name: "Site OraScore", email: SUPPORT },
       to: [{ email: SUPPORT }],
       replyTo: { email },
-      subject: `Early Adopter : ${email} — ${resume}`,
+      subject: `Early Adopter${candId ? ` n°${candId}` : ""} : ${email} — ${resume}`,
       textContent: `Nouvelle demande Early Adopter.
 E-mail : ${email}
 Type de base : ${profil.type}
