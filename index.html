@@ -528,7 +528,10 @@ footer a{color:#38bdf8;text-decoration:none}
       <p style="font-size:13.5px;color:var(--muted);margin-bottom:0">Ce que je demande en échange : tester sur au moins une base Oracle réelle et partager un retour (bugs trouvés, suggestions, témoignage si satisfait).</p>
       <form class="early-form" id="early-form" onsubmit="return submitEarly(event)">
         <input class="early-input" type="email" required maxlength="200" placeholder="Votre email professionnel" id="early-email" autocomplete="email">
-        <input class="early-input" type="text" maxlength="200" placeholder="Votre environnement (ex. 19c, RAC, 12 bases) — facultatif" id="early-env">
+        <select class="early-input" id="early-type" required aria-label="Type de base principal"><option value="">Type de base principal</option><option value="Instance unique">Instance unique</option><option value="RAC">RAC</option><option value="Data Guard">Data Guard</option><option value="RAC + Data Guard">RAC + Data Guard</option></select>
+        <select class="early-input" id="early-os" required aria-label="OS du serveur de base"><option value="">OS du serveur de base</option><option value="Linux">Linux</option><option value="AIX">AIX</option><option value="Windows">Windows</option><option value="Solaris">Solaris</option><option value="Autre">Autre</option></select>
+        <select class="early-input" id="early-version" required aria-label="Version Oracle"><option value="">Version Oracle</option><option value="12.2">12.2</option><option value="18c">18c</option><option value="19c">19c</option><option value="21c">21c</option><option value="23ai / 26ai">23ai / 26ai</option><option value="Plusieurs versions">Plusieurs versions</option></select>
+        <input class="early-input" type="text" maxlength="200" placeholder="Précisions (Exadata, cloud, nb de bases…) — facultatif" id="early-env">
         <!-- champ piège pour les robots : invisible pour un visiteur -->
         <input type="text" id="early-site" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px">
         <button class="btn-gold" type="submit" id="early-btn">Demander ma licence gratuite →</button>
@@ -667,6 +670,9 @@ async function submitEarly(ev) {
   ev.preventDefault();
   const email = document.getElementById('early-email').value.trim();
   const env = document.getElementById('early-env').value.trim();
+  const type = document.getElementById('early-type').value;
+  const os = document.getElementById('early-os').value;
+  const version = document.getElementById('early-version').value;
   const site = document.getElementById('early-site').value;
   const msg = document.getElementById('early-msg');
   const btn = document.getElementById('early-btn');
@@ -675,12 +681,17 @@ async function submitEarly(ev) {
     msg.style.color = '#f59e0b';
     return false;
   }
+  if (!type || !os || !version) {
+    msg.textContent = "⚠ Indiquez le type de base, l'OS et la version Oracle : ils servent à varier les environnements testés.";
+    msg.style.color = '#f59e0b';
+    return false;
+  }
   btn.disabled = true;
   msg.textContent = 'Envoi en cours…';
   msg.style.color = '';
   try {
     const r = await fetch('/api/early', {method: 'POST', headers: {'Content-Type': 'application/json'},
-                                         body: JSON.stringify({email, env, site})});
+                                         body: JSON.stringify({email, env, type, os, version, site})});
     if (!r.ok) throw new Error(r.status);
     msg.textContent = '✓ Demande reçue. Un e-mail de confirmation vient de vous être envoyé (pensez aux indésirables) ; réponse sous 24h.';
     msg.style.color = '#86efac';

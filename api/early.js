@@ -7,6 +7,14 @@
 const SUPPORT = "support@orascore.io";
 const EMAIL_RE = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/;
 
+// Profil du candidat : valeurs des listes du formulaire seulement (sert à varier les environnements)
+const CHOIX = {
+  type: ["Instance unique", "RAC", "Data Guard", "RAC + Data Guard"],
+  os: ["Linux", "AIX", "Windows", "Solaris", "Autre"],
+  version: ["12.2", "18c", "19c", "21c", "23ai / 26ai", "Plusieurs versions"],
+};
+const choix = (champ, v) => (CHOIX[champ].includes(String(v)) ? String(v) : "non précisé");
+
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
@@ -30,6 +38,8 @@ async function handler(req, res) {
   const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
   const email = String(body.email || "").trim().slice(0, 200);
   const env = String(body.env || "").trim().slice(0, 200);
+  const profil = { type: choix("type", body.type), os: choix("os", body.os), version: choix("version", body.version) };
+  const resume = `${profil.type} · ${profil.os} · Oracle ${profil.version}`;
   // Champ piège rempli : un robot. On répond « ok » sans rien envoyer.
   if (body.site) return res.status(200).json({ ok: true });
   if (!EMAIL_RE.test(email)) return res.status(400).json({ ok: false, error: "email" });
@@ -39,14 +49,19 @@ async function handler(req, res) {
       sender: { name: "Site OraScore", email: SUPPORT },
       to: [{ email: SUPPORT }],
       replyTo: { email },
-      subject: `Early Adopter : ${email}`,
+      subject: `Early Adopter : ${email} — ${resume}`,
       textContent: `Nouvelle demande Early Adopter.
 E-mail : ${email}
-Environnement : ${env || "non précisé"}
+Type de base : ${profil.type}
+OS du serveur : ${profil.os}
+Version Oracle : ${profil.version}
+Précisions : ${env || "aucune"}
 
 Répondre à ce message répond directement au demandeur.`,
       htmlContent: `<p>Nouvelle demande Early Adopter.</p>
-        <p><b>E-mail :</b> ${esc(email)}<br><b>Environnement :</b> ${esc(env || "non précisé")}</p>
+        <p><b>E-mail :</b> ${esc(email)}<br><b>Type de base :</b> ${esc(profil.type)}<br>
+        <b>OS du serveur :</b> ${esc(profil.os)}<br><b>Version Oracle :</b> ${esc(profil.version)}<br>
+        <b>Précisions :</b> ${esc(env || "aucune")}</p>
         <p>Répondre à ce message répond directement au demandeur.</p>`,
     });
     await sendMail(apiKey, {
