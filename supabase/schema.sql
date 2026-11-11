@@ -63,3 +63,14 @@ alter table public.licences     enable row level security;
 alter table public.historique   enable row level security;
 -- La vue lit les tables avec les droits de l'appelant (pas de fuite par la vue)
 alter view public.couverture_profils set (security_invoker = true);
+
+-- Droits explicites (projet créé avec « Automatically expose new tables » DÉCOCHÉ) :
+-- seul le rôle service_role (clé secrète de la fonction du site) lit et écrit ;
+-- anon et authenticated (clés publiques) n'ont aucun accès.
+revoke all on public.candidatures, public.licences, public.historique, public.couverture_profils
+    from anon, authenticated;
+grant usage on schema public to service_role;
+grant select, insert, update, delete on public.candidatures, public.licences, public.historique
+    to service_role;
+grant select on public.couverture_profils to service_role;
+grant usage, select on all sequences in schema public to service_role;
