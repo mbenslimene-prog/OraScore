@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>OraScore — Administration</title>
+<style>
+:root{--bg:#0f172a;--bg2:#1e293b;--bg3:#0b1222;--border:#334155;--text:#e2e8f0;--muted:#94a3b8;--blue:#0891b2;--blue-l:#38bdf8;
+      --ok:#22c55e;--warn:#f59e0b;--crit:#ef4444;--gold:#f59e0b}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 system-ui,-apple-system,"Segoe UI",sans-serif}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 20px;border-bottom:1px solid var(--border);background:var(--bg3)}
+header b{font-size:16px}header b span{color:var(--blue-l)}
+main{max-width:1180px;margin:0 auto;padding:20px 16px 60px}
+h2{font-size:15px;margin:28px 0 10px;color:var(--blue-l);text-transform:uppercase;letter-spacing:.05em}
+button,select,input,textarea{font:inherit;color:var(--text);background:var(--bg2);border:1px solid var(--border);border-radius:7px;padding:7px 11px}
+button{cursor:pointer}button:hover{border-color:var(--blue-l)}button.prim{background:var(--blue);border-color:var(--blue);color:#fff;font-weight:600}
+button.danger{border-color:#7f1d1d;color:#fecaca}button:disabled{opacity:.5;cursor:default}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:12px}
+.card{background:var(--bg2);border:1px solid var(--border);border-radius:10px;padding:14px}.card .n{font-size:26px;font-weight:700}.card .l{color:var(--muted);font-size:12.5px}
+table{width:100%;border-collapse:collapse;background:var(--bg2);border-radius:10px;overflow:hidden}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid var(--border);vertical-align:top}th{color:var(--muted);font-weight:600;font-size:12.5px;background:var(--bg3)}
+tr.cand{cursor:pointer}tr.cand:hover td{background:#243247}
+.tag{display:inline-block;padding:1px 8px;border-radius:10px;font-size:12px;font-weight:600;border:1px solid var(--border)}
+.t-nouvelle{color:var(--blue-l);border-color:var(--blue)}.t-acceptée,.t-attribuée{color:var(--ok);border-color:#166534}.t-refusée,.t-révoquée{color:#fca5a5;border-color:#7f1d1d}
+.t-en.attente,.t-attente{color:var(--warn);border-color:#78350f}.t-libre{color:var(--muted)}.t-abandon{color:var(--muted)}
+.lic{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px}.lic div{background:var(--bg2);border:1px solid var(--border);border-radius:8px;padding:8px 10px;font-size:12.5px}
+.lic div b{font-size:14px}.res{border-style:dashed!important}
+.filters{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}.filters button.on{border-color:var(--blue-l);color:var(--blue-l)}
+.detail td{background:var(--bg3)}.detail .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+@media(max-width:760px){.detail .grid{grid-template-columns:1fr}.hide-s{display:none}}
+.hist{margin:0;padding-left:18px;color:var(--muted);font-size:12.5px}.hist li{margin:2px 0}.hist b{color:var(--text);font-weight:600}
+.actions{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.warn{background:#3b2a0b;border:1px solid #78350f;color:#fde68a;border-radius:8px;padding:9px 12px;margin:10px 0}
+.err{color:#fca5a5}.muted{color:var(--muted)}
+#login{max-width:420px;margin:12vh auto;background:var(--bg2);border:1px solid var(--border);border-radius:12px;padding:26px}
+#login input{width:100%;margin:10px 0}
+dialog{background:var(--bg2);color:var(--text);border:1px solid var(--border);border-radius:12px;width:min(760px,94vw);padding:20px}
+dialog::backdrop{background:rgba(0,0,0,.6)}dialog input,dialog textarea{width:100%;margin:4px 0 10px}dialog textarea{min-height:340px;font-family:ui-monospace,Consolas,monospace;font-size:12.5px}
+#toast{position:fixed;bottom:18px;left:50%;transform:translateX(-50%);background:var(--bg2);border:1px solid var(--border);padding:10px 16px;border-radius:9px;display:none;max-width:90vw}
+</style>
+</head>
+<body>
+<header><b>Ora<span>Score</span> — Administration</b><span id="who" class="muted"></span></header>
+
+<section id="login" hidden>
+  <h3 style="margin-top:0">Connexion</h3>
+  <p class="muted">Saisissez votre adresse : un lien de connexion vous est envoyé par e-mail (valable une heure, une seule fois).</p>
+  <form id="loginForm"><input type="email" id="loginEmail" required placeholder="Votre adresse e-mail" autocomplete="email">
+  <button class="prim" type="submit">Recevoir le lien</button></form>
+  <p id="loginMsg" class="muted"></p>
+</section>
+
+<main id="app" hidden>
+  <div id="cfgWarn"></div>
+  <div class="cards" id="cards"></div>
+  <h2>Candidatures</h2>
+  <div class="filters" id="filters"></div>
+  <table><thead><tr><th>N°</th><th>Date</th><th>Candidat</th><th class="hide-s">Profil</th><th>Statut</th></tr></thead><tbody id="cands"></tbody></table>
+  <h2>Licences Early Adopter</h2>
+  <div class="lic" id="lics"></div>
+  <h2>Couverture des profils <span class="muted" style="text-transform:none;letter-spacing:0">(règle : 2 licences au maximum par profil)</span></h2>
+  <table><thead><tr><th>Type de base</th><th>OS</th><th>Version</th><th>Candidatures</th><th>Acceptées</th></tr></thead><tbody id="couv"></tbody></table>
+</main>
+
+<dialog id="dlg">
+  <h3 id="dlgTitle" style="margin-top:0"></h3>
+  <div id="dlgWarn"></div>
+  <label class="muted">Destinataire</label><input id="dlgTo" disabled>
+  <label class="muted">Objet</label><input id="dlgSubject" maxlength="200">
+  <label class="muted">Message (vous pouvez le modifier avant l'envoi)</label><textarea id="dlgText"></textarea>
+  <div class="actions"><button class="prim" id="dlgSend">Envoyer</button><button id="dlgCancel">Annuler</button></div>
+</dialog>
+<div id="toast"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.js"></script>
+<script>
+// Page d'administration OraScore : connexion par lien e-mail (Supabase Auth), données et actions par
+// les fonctions /api/admin/* qui vérifient à chaque appel que la personne connectée est l'administrateur.
+// Toutes les valeurs saisies par les candidats sont échappées avant affichage.
+const $ = (id) => document.getElementById(id);
+const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const fr = (d) => new Date(d).toLocaleString("fr-FR", { dateStyle: "short", timeStyle: "short" });
+let sb, session, D = null, filtre = "a_traiter", ouvert = null, envoi = null;
+
+function toast(msg, err) {
+  const t = $("toast"); t.textContent = msg; t.style.color = err ? "#fca5a5" : "#86efac"; t.style.display = "block";
+  clearTimeout(t._t); t._t = setTimeout(() => (t.style.display = "none"), 5000);
+}
+
+async function api(path, body) {
+  const r = await fetch(path, { method: body ? "POST" : "GET",
+    headers: { "Content-Type": "application/json", Authorization: `Bearer ${session.access_token}` },
+    body: body ? JSON.stringify(body) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (r.status === 401) { await sb.auth.signOut(); location.reload(); }
+  if (!r.ok || j.ok === false) throw new Error(j.error || `erreur ${r.status}`);
+  return j;
+}
+
+async function demarrer() {
+  const cfg = await (await fetch("/api/admin/data?config")).json();
+  sb = supabase.createClient(cfg.supabaseUrl, cfg.anonKey);
+  const { data } = await sb.auth.getSession();
+  session = data.session;
+  if (!session) {
+    $("login").hidden = false;
+    $("loginForm").onsubmit = async (e) => {
+      e.preventDefault();
+      const { error } = await sb.auth.signInWithOtp({ email: $("loginEmail").value.trim(),
+        options: { shouldCreateUser: false, emailRedirectTo: location.origin + "/admin/" } });
+      // Même message dans tous les cas : on ne révèle pas quelles adresses sont autorisées
+      $("loginMsg").textContent = error && !/not allowed|signups/i.test(error.message)
+        ? "Envoi impossible pour le moment, réessayez dans quelques minutes."
+        : "Si cette adresse est autorisée, un lien de connexion vient d'être envoyé.";
+    };
+    return;
+  }
+  $("who").innerHTML = `${esc(session.user.email)} · <button id="logout">Se déconnecter</button>`;
+  $("logout").onclick = async () => { await sb.auth.signOut(); location.reload(); };
+  $("app").hidden = false;
+  await charger();
+}
+
+async function charger() {
+  try { D = await api("/api/admin/data"); afficher(); }
+  catch (e) { $("cfgWarn").innerHTML = `<div class="warn">Chargement impossible : ${esc(e.message)}</div>`; }
+}
+
+const profil = (c) => `${c.type_base || "?"} · ${c.os || "?"} · ${c.version || "?"}`;
+function acceptesProfil(c) {
+  return D.candidatures.filter((x) => x.statut === "acceptée" && profil(x) === profil(c)).length;
+}
+
+function afficher() {
+  const C = D.candidatures, Lc = D.licences;
+  const warn = [];
+  if (!D.driveConfigure) warn.push("Variable <b>DRIVE_URL</b> absente dans Vercel : l'e-mail d'acceptation ne peut pas être préparé.");
+  if (!D.clesConfigurees) warn.push("Variable <b>EA_KEYS</b> absente dans Vercel : les clés de licence ne peuvent pas être envoyées.");
+  $("cfgWarn").innerHTML = warn.map((w) => `<div class="warn">${w}</div>`).join("");
+  const n = (f) => C.filter(f).length;
+  const libres = Lc.filter((l) => l.statut === "libre" && !l.reserve).length;
+  const reserve = Lc.filter((l) => l.statut === "libre" && l.reserve).length;
+  $("cards").innerHTML = [
+    [n((c) => c.statut === "nouvelle"), "Nouvelles demandes"],
+    [n((c) => c.statut === "en attente"), "En attente"],
+    [n((c) => c.statut === "acceptée"), "Acceptées"],
+    [`${libres} + ${reserve}`, "Licences libres (+ réserve)"],
+  ].map(([v, l]) => `<div class="card"><div class="n">${esc(v)}</div><div class="l">${esc(l)}</div></div>`).join("");
+
+  const F = { a_traiter: ["À traiter", (c) => ["nouvelle", "en attente"].includes(c.statut)],
+              acceptee: ["Acceptées", (c) => c.statut === "acceptée"], refusee: ["Refusées", (c) => c.statut === "refusée"],
+              toutes: ["Toutes", () => true] };
+  $("filters").innerHTML = Object.entries(F).map(([k, [l, f]]) =>
+    `<button data-f="${k}" class="${k === filtre ? "on" : ""}">${l} (${C.filter(f).length})</button>`).join("");
+  $("filters").querySelectorAll("button").forEach((b) => (b.onclick = () => { filtre = b.dataset.f; afficher(); }));
+
+  const liste = C.filter(F[filtre][1]);
+  $("cands").innerHTML = liste.length ? liste.map((c) => `
+    <tr class="cand" data-id="${c.id}"><td>${c.id}</td><td>${fr(c.created_at)}</td>
+      <td><b>${esc(c.prenom)} ${esc(c.nom)}</b>${c.societe ? ` — ${esc(c.societe)}` : ""}<br><span class="muted">${esc(c.email)}</span></td>
+      <td class="hide-s">${esc(profil(c))}</td><td><span class="tag t-${esc(c.statut).replace(" ", ".")}">${esc(c.statut)}</span></td></tr>
+    ${ouvert === c.id ? detail(c) : ""}`).join("") : `<tr><td colspan="5" class="muted">Aucune candidature.</td></tr>`;
+  $("cands").querySelectorAll("tr.cand").forEach((tr) => (tr.onclick = () => {
+    ouvert = ouvert === Number(tr.dataset.id) ? null : Number(tr.dataset.id); afficher(); }));
+  brancherActions();
+
+  $("lics").innerHTML = Lc.map((l) => `<div class="${l.reserve ? "res" : ""}"><b>N°${l.numero}</b>${l.reserve ? " · réserve" : ""}<br>
+    <span class="tag t-${esc(l.statut)}">${esc(l.statut)}</span><br>${l.titulaire ? esc(l.titulaire) : '<span class="muted">—</span>'}
+    ${l.date_attribution ? `<br><span class="muted">${esc(l.date_attribution)}</span>` : ""}</div>`).join("");
+
+  $("couv").innerHTML = D.couverture.length ? D.couverture.map((p) => `<tr><td>${esc(p.type_base)}</td><td>${esc(p.os)}</td>
+    <td>${esc(p.version)}</td><td>${p.candidatures}</td><td>${p.acceptees}${p.acceptees >= 2 ? ' <span class="tag t-refusée">complet</span>' : ""}</td></tr>`).join("")
+    : `<tr><td colspan="5" class="muted">Aucune donnée.</td></tr>`;
+}
+
+function detail(c) {
+  const h = D.historique.filter((e) => e.candidature_id === c.id);
+  const lic = D.licences.find((l) => l.candidature_id === c.id && l.statut === "attribuée");
+  const nbProfil = acceptesProfil(c);
+  const libresRes = D.licences.filter((l) => l.statut === "libre" && l.reserve).map((l) => l.numero);
+  const ouvertA = ["nouvelle", "en attente"].includes(c.statut);
+  return `<tr class="detail"><td colspan="5"><div class="grid">
+    <div><b>Coordonnées</b><br>${esc(c.prenom)} ${esc(c.nom)}${c.societe ? ` (${esc(c.societe)})` : ""}<br>${esc(c.email)}<br>
+      Téléphone : ${esc(c.telephone || "non communiqué")}<br>Profil : ${esc(profil(c))}<br>Précisions : ${esc(c.precisions || "aucune")}
+      ${lic ? `<br><b>Licence n°${lic.numero}</b> attribuée le ${esc(lic.date_attribution)}` : ""}
+      ${c.notes ? `<br><br><b>Notes</b><br><span class="muted">${esc(c.notes).replace(/\n/g, "<br>")}</span>` : ""}</div>
+    <div><b>Historique</b><ul class="hist">${h.map((e) => `<li><b>${esc(e.evenement)}</b> · ${fr(e.created_at)}${e.details ? ` — ${esc(e.details)}` : ""}</li>`).join("") || "<li>—</li>"}</ul></div>
+  </div>
+  ${ouvertA && nbProfil >= 2 ? `<div class="warn">Ce profil (${esc(profil(c))}) a déjà ${nbProfil} licences : votre règle est de 2 au maximum.</div>` : ""}
+  <div class="actions">
+    ${ouvertA ? `<button class="prim" data-a="accepter" data-id="${c.id}">Accepter…</button>
+      <select data-lic="${c.id}"><option value="">Prochaine licence libre</option>${libresRes.map((n) => `<option value="${n}">Licence de réserve n°${n}</option>`).join("")}</select>
+      <button data-a="refuser" data-id="${c.id}">Refuser…</button>
+      <select data-motif="${c.id}"><option value="profil">Motif : profil déjà couvert</option><option value="complet">Motif : programme complet</option><option value="autre">Motif : autre</option></select>
+      ${c.statut === "nouvelle" ? `<button data-a="attente" data-id="${c.id}">Mettre en attente</button>` : ""}` : ""}
+    ${c.statut === "acceptée" ? `<button data-a="retour" data-id="${c.id}">Retour reçu</button>
+      <button data-a="témoignage" data-id="${c.id}">Témoignage reçu</button>
+      <button data-a="correction" data-id="${c.id}">Correction faite</button>` : ""}
+    ${lic ? `<button class="danger" data-a="revoquer" data-num="${lic.numero}">Révoquer la licence n°${lic.numero}</button>` : ""}
+    <input data-note="${c.id}" placeholder="Ajouter une note…" style="flex:1;min-width:200px"><button data-a="note" data-id="${c.id}">Noter</button>
+  </div></td></tr>`;
+}
+
+function brancherActions() {
+  document.querySelectorAll("[data-a]").forEach((b) => (b.onclick = async (ev) => {
+    ev.stopPropagation();
+    const a = b.dataset.a, id = Number(b.dataset.id);
+    try {
+      if (a === "accepter") {
+        const numero = document.querySelector(`[data-lic="${id}"]`).value || undefined;
+        const p = await api("/api/admin/action", { action: "apercu_acceptation", id, numero });
+        ouvrirEnvoi(`Accepter — licence n°${p.numero}`, p, { action: "accepter", id, numero: p.numero });
+      } else if (a === "refuser") {
+        const motif = document.querySelector(`[data-motif="${id}"]`).value;
+        const p = await api("/api/admin/action", { action: "apercu_refus", id, motif });
+        ouvrirEnvoi("Refuser la candidature", p, { action: "refuser", id, motif });
+      } else if (a === "attente") {
+        await api("/api/admin/action", { action: "statut", id, statut: "en attente" }); toast("Mise en attente."); await charger();
+      } else if (a === "note") {
+        const t = document.querySelector(`[data-note="${id}"]`).value.trim(); if (!t) return;
+        await api("/api/admin/action", { action: "note", id, texte: t }); toast("Note ajoutée."); await charger();
+      } else if (["retour", "témoignage", "correction"].includes(a)) {
+        const details = prompt(`${a} — précisions (facultatif) :`) ?? null; if (details === null) return;
+        await api("/api/admin/action", { action: "evenement", id, evenement: a, details });
+        toast(a === "retour" ? "Retour noté : les relances automatiques s'arrêtent." : "Noté."); await charger();
+      } else if (a === "revoquer") {
+        if (!confirm(`Révoquer la licence n°${b.dataset.num} ? Elle ne sera plus attribuable.`)) return;
+        await api("/api/admin/action", { action: "revoquer", numero: Number(b.dataset.num) }); toast("Licence révoquée."); await charger();
+      }
+    } catch (e) { toast(e.message, true); }
+  }));
+}
+
+function ouvrirEnvoi(titre, p, base) {
+  envoi = base;
+  $("dlgTitle").textContent = titre; $("dlgTo").value = p.to; $("dlgSubject").value = p.subject; $("dlgText").value = p.text;
+  $("dlgWarn").innerHTML = base.action === "accepter" ? '<div class="warn">Relisez le message : il contient la clé de licence. Il part depuis support@orascore.io.</div>' : "";
+  $("dlg").showModal();
+}
+$("dlgCancel").onclick = () => $("dlg").close();
+$("dlgSend").onclick = async () => {
+  const btn = $("dlgSend"); btn.disabled = true;
+  try {
+    await api("/api/admin/action", { ...envoi, subject: $("dlgSubject").value, text: $("dlgText").value });
+    $("dlg").close(); toast(envoi.action === "accepter" ? "Licence attribuée et e-mail envoyé." : "E-mail de refus envoyé.");
+    await charger();
+  } catch (e) { toast(e.message, true); } finally { btn.disabled = false; }
+};
+
+demarrer().catch((e) => { document.body.insertAdjacentHTML("beforeend", `<p class="err" style="padding:20px">Erreur : ${esc(e.message)}</p>`); });
+</script>
+</body>
+</html>
