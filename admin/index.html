@@ -158,7 +158,7 @@ function afficher() {
   const liste = C.filter(F[filtre][1]);
   $("cands").innerHTML = liste.length ? liste.map((c) => `
     <tr class="cand" data-id="${c.id}"><td>${c.id}</td><td>${fr(c.created_at)}</td>
-      <td><b>${esc(c.prenom)} ${esc(c.nom)}</b>${c.societe ? ` — ${esc(c.societe)}` : ""}<br><span class="muted">${esc(c.email)}</span></td>
+      <td><b>${c.prenom || c.nom ? `${esc(c.prenom)} ${esc(c.nom)}` : "(sans nom)"}</b>${c.societe ? ` — ${esc(c.societe)}` : ""}<br><span class="muted">${esc(c.email)}</span></td>
       <td class="hide-s">${esc(profil(c))}</td><td><span class="tag t-${esc(c.statut).replace(" ", ".")}">${esc(c.statut)}</span></td></tr>
     ${ouvert === c.id ? detail(c) : ""}`).join("") : `<tr><td colspan="5" class="muted">Aucune candidature.</td></tr>`;
   $("cands").querySelectorAll("tr.cand").forEach((tr) => (tr.onclick = () => {
@@ -197,7 +197,8 @@ function detail(c) {
     ${c.statut === "acceptée" ? `<button data-a="retour" data-id="${c.id}">Retour reçu</button>
       <button data-a="témoignage" data-id="${c.id}">Témoignage reçu</button>
       <button data-a="correction" data-id="${c.id}">Correction faite</button>` : ""}
-    ${lic ? `<button class="danger" data-a="revoquer" data-num="${lic.numero}">Révoquer la licence n°${lic.numero}</button>` : ""}
+    ${lic ? `<button data-a="liberer" data-num="${lic.numero}">Libérer la licence n°${lic.numero}</button>
+      <button class="danger" data-a="revoquer" data-num="${lic.numero}">Révoquer la licence n°${lic.numero}</button>` : ""}
     <input data-note="${c.id}" placeholder="Ajouter une note…" style="flex:1;min-width:200px"><button data-a="note" data-id="${c.id}">Noter</button>
   </div></td></tr>`;
 }
@@ -224,6 +225,10 @@ function brancherActions() {
         const details = prompt(`${a} — précisions (facultatif) :`) ?? null; if (details === null) return;
         await api("/api/admin/action", { action: "evenement", id, evenement: a, details });
         toast(a === "retour" ? "Retour noté : les relances automatiques s'arrêtent." : "Noté."); await charger();
+      } else if (a === "liberer") {
+        if (!confirm(`Libérer la licence n°${b.dataset.num} ? Elle redevient libre et la demande repasse « à traiter ». ` +
+                     "À réserver à un essai ou une erreur : la clé déjà envoyée reste utilisable dans OraScore.")) return;
+        await api("/api/admin/action", { action: "liberer", numero: Number(b.dataset.num) }); toast("Licence libérée."); await charger();
       } else if (a === "revoquer") {
         if (!confirm(`Révoquer la licence n°${b.dataset.num} ? Elle ne sera plus attribuable.`)) return;
         await api("/api/admin/action", { action: "revoquer", numero: Number(b.dataset.num) }); toast("Licence révoquée."); await charger();

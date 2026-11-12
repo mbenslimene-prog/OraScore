@@ -89,6 +89,20 @@ async function handler(req, res) {
       return res.status(200).json({ ok: true });
     }
 
+    if (a === "liberer") {
+      // Annule une attribution (essai ou erreur) : licence de nouveau libre, demande de nouveau à traiter.
+      // La clé déjà envoyée reste reconnue par OraScore (vérification hors ligne) : à réserver aux essais.
+      const [l] = await L.db(`licences?numero=eq.${Number(b.numero)}&select=*`);
+      if (!l || l.statut !== "attribuée") return res.status(409).json({ ok: false, error: "licence non attribuée" });
+      await L.db(`licences?numero=eq.${l.numero}`, { method: "PATCH",
+        body: { statut: "libre", candidature_id: null, titulaire: null, date_attribution: null } });
+      if (l.candidature_id) {
+        await L.db(`candidatures?id=eq.${l.candidature_id}`, { method: "PATCH", body: { statut: "nouvelle" } });
+        await L.journal(l.candidature_id, "autre", `Licence n°${l.numero} libérée (attribution annulée)`);
+      }
+      return res.status(200).json({ ok: true });
+    }
+
     if (a === "revoquer") {
       const [l] = await L.db(`licences?numero=eq.${Number(b.numero)}&select=*`);
       if (!l || l.statut !== "attribuée") return res.status(409).json({ ok: false, error: "licence non attribuée" });
