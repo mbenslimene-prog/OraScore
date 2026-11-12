@@ -527,7 +527,11 @@ footer a{color:#38bdf8;text-decoration:none}
       <p style="color:var(--muted);margin-bottom:0">Je cherche 10 DBA Oracle qui veulent tester l'outil sur leurs bases réelles et me donner un retour honnête. En échange, une licence Équipe (jusqu'à 25 bases) à vie — offerte.</p>
       <p style="font-size:13.5px;color:var(--muted);margin-bottom:0">Ce que je demande en échange : tester sur au moins une base Oracle réelle et partager un retour (bugs trouvés, suggestions, témoignage si satisfait).</p>
       <form class="early-form" id="early-form" onsubmit="return submitEarly(event)">
+        <input class="early-input" type="text" required maxlength="80" placeholder="Prénom" id="early-prenom" autocomplete="given-name">
+        <input class="early-input" type="text" required maxlength="80" placeholder="Nom" id="early-nom" autocomplete="family-name">
         <input class="early-input" type="email" required maxlength="200" placeholder="Votre email professionnel" id="early-email" autocomplete="email">
+        <input class="early-input" type="tel" required maxlength="25" placeholder="Téléphone" id="early-tel" autocomplete="tel">
+        <input class="early-input" type="text" maxlength="120" placeholder="Société — facultatif" id="early-societe" autocomplete="organization">
         <select class="early-input" id="early-type" required aria-label="Type de base principal"><option value="">Type de base principal</option><option value="Instance unique">Instance unique</option><option value="RAC">RAC</option><option value="Data Guard">Data Guard</option><option value="RAC + Data Guard">RAC + Data Guard</option></select>
         <select class="early-input" id="early-os" required aria-label="OS du serveur de base"><option value="">OS du serveur de base</option><option value="Linux">Linux</option><option value="AIX">AIX</option><option value="Windows">Windows</option><option value="Solaris">Solaris</option><option value="Autre">Autre</option></select>
         <select class="early-input" id="early-version" required aria-label="Version Oracle"><option value="">Version Oracle</option><option value="12.2">12.2</option><option value="18c">18c</option><option value="19c">19c</option><option value="21c">21c</option><option value="23ai / 26ai">23ai / 26ai</option><option value="Plusieurs versions">Plusieurs versions</option></select>
@@ -537,6 +541,7 @@ footer a{color:#38bdf8;text-decoration:none}
         <button class="btn-gold" type="submit" id="early-btn">Demander ma licence gratuite →</button>
       </form>
       <div class="early-note" id="early-msg" aria-live="polite">Réponse sous 24h. Aucun spam — juste le lien de téléchargement et les instructions.</div>
+      <div class="early-note" style="font-size:12px;margin-top:6px">Vos coordonnées servent uniquement au programme Early Adopter (licence, suivi, retours). Elles ne sont ni vendues ni transmises. Pour les consulter ou les faire supprimer : <a href="mailto:support@orascore.io" style="color:var(--blue-light)">support@orascore.io</a>.</div>
     </div>
   </div>
 </section>
@@ -669,6 +674,10 @@ footer a{color:#38bdf8;text-decoration:none}
 async function submitEarly(ev) {
   ev.preventDefault();
   const email = document.getElementById('early-email').value.trim();
+  const prenom = document.getElementById('early-prenom').value.trim();
+  const nom = document.getElementById('early-nom').value.trim();
+  const tel = document.getElementById('early-tel').value.trim();
+  const societe = document.getElementById('early-societe').value.trim();
   const env = document.getElementById('early-env').value.trim();
   const type = document.getElementById('early-type').value;
   const os = document.getElementById('early-os').value;
@@ -678,6 +687,16 @@ async function submitEarly(ev) {
   const btn = document.getElementById('early-btn');
   if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
     msg.textContent = '⚠ Veuillez entrer une adresse email valide.';
+    msg.style.color = '#f59e0b';
+    return false;
+  }
+  if (!prenom || !nom) {
+    msg.textContent = '⚠ Indiquez votre prénom et votre nom.';
+    msg.style.color = '#f59e0b';
+    return false;
+  }
+  if (!/^[+0-9][0-9 .()\-]{5,24}$/.test(tel)) {
+    msg.textContent = '⚠ Indiquez un numéro de téléphone valide (ex. 06 12 34 56 78 ou +33 6 12 34 56 78).';
     msg.style.color = '#f59e0b';
     return false;
   }
@@ -691,7 +710,7 @@ async function submitEarly(ev) {
   msg.style.color = '';
   try {
     const r = await fetch('/api/early', {method: 'POST', headers: {'Content-Type': 'application/json'},
-                                         body: JSON.stringify({email, env, type, os, version, site})});
+                                         body: JSON.stringify({prenom, nom, email, tel, societe, env, type, os, version, site})});
     if (!r.ok) throw new Error(r.status);
     msg.textContent = '✓ Demande reçue. Un e-mail de confirmation vient de vous être envoyé (pensez aux indésirables) ; réponse sous 24h.';
     msg.style.color = '#86efac';

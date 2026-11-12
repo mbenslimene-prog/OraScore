@@ -8,7 +8,11 @@
 create table if not exists public.candidatures (
     id           bigint generated always as identity primary key,
     created_at   timestamptz not null default now(),
+    prenom       text,
+    nom          text,
     email        text not null,
+    telephone    text,
+    societe      text,
     type_base    text,                      -- Instance unique, RAC, Data Guard, RAC + Data Guard
     os           text,                      -- Linux, AIX, Windows, Solaris, Autre
     version      text,                      -- 12.2 … 23ai / 26ai, Plusieurs versions

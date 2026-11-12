@@ -8,6 +8,8 @@
 // partent quand même : aucune demande n'est perdue.
 
 const SUPPORT = "support@orascore.io";
+const TEL_RE = /^[+0-9][0-9 .()-]{5,24}$/;
+const texte = (v, n) => String(v || "").replace(/\s+/g, " ").trim().slice(0, n);
 const EMAIL_RE = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/;
 
 // Profil du candidat : valeurs des listes du formulaire seulement (sert à varier les environnements)
@@ -64,22 +66,29 @@ async function handler(req, res) {
   const body = typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
   const email = String(body.email || "").trim().slice(0, 200);
   const env = String(body.env || "").trim().slice(0, 200);
+  const prenom = texte(body.prenom, 80), nom = texte(body.nom, 80);
+  const tel = texte(body.tel, 25), societe = texte(body.societe, 120);
   const profil = { type: choix("type", body.type), os: choix("os", body.os), version: choix("version", body.version) };
   const resume = `${profil.type} · ${profil.os} · Oracle ${profil.version}`;
   // Champ piège rempli : un robot. On répond « ok » sans rien envoyer.
   if (body.site) return res.status(200).json({ ok: true });
   if (!EMAIL_RE.test(email)) return res.status(400).json({ ok: false, error: "email" });
+  if (!prenom || !nom) return res.status(400).json({ ok: false, error: "nom" });
+  if (!TEL_RE.test(tel)) return res.status(400).json({ ok: false, error: "telephone" });
 
-  const candId = await saveRequest({ email, type_base: profil.type, os: profil.os, version: profil.version,
+  const candId = await saveRequest({ prenom, nom, email, telephone: tel, societe: societe || null,
+                                    type_base: profil.type, os: profil.os, version: profil.version,
                                     precisions: env || null });
   try {
     await sendMail(apiKey, {
       sender: { name: "Site OraScore", email: SUPPORT },
       to: [{ email: SUPPORT }],
       replyTo: { email },
-      subject: `Early Adopter${candId ? ` n°${candId}` : ""} : ${email} — ${resume}`,
+      subject: `Early Adopter${candId ? ` n°${candId}` : ""} : ${prenom} ${nom} — ${resume}`,
       textContent: `Nouvelle demande Early Adopter.
+Nom : ${prenom} ${nom}${societe ? ` (${societe})` : ""}
 E-mail : ${email}
+Téléphone : ${tel}
 Type de base : ${profil.type}
 OS du serveur : ${profil.os}
 Version Oracle : ${profil.version}
@@ -87,7 +96,8 @@ Précisions : ${env || "aucune"}
 
 Répondre à ce message répond directement au demandeur.`,
       htmlContent: `<p>Nouvelle demande Early Adopter.</p>
-        <p><b>E-mail :</b> ${esc(email)}<br><b>Type de base :</b> ${esc(profil.type)}<br>
+        <p><b>Nom :</b> ${esc(prenom)} ${esc(nom)}${societe ? ` (${esc(societe)})` : ""}<br>
+        <b>E-mail :</b> ${esc(email)}<br><b>Téléphone :</b> ${esc(tel)}<br><b>Type de base :</b> ${esc(profil.type)}<br>
         <b>OS du serveur :</b> ${esc(profil.os)}<br><b>Version Oracle :</b> ${esc(profil.version)}<br>
         <b>Précisions :</b> ${esc(env || "aucune")}</p>
         <p>Répondre à ce message répond directement au demandeur.</p>`,
@@ -98,14 +108,14 @@ Répondre à ce message répond directement au demandeur.`,
       replyTo: { email: SUPPORT },
       subject: "OraScore : votre demande Early Adopter est bien reçue",
       // version texte en plus du HTML : un message HTML seul est mal noté par les filtres (Yahoo)
-      textContent: `Bonjour,
+      textContent: `Bonjour ${prenom},
 
 Merci pour votre intérêt pour OraScore. Votre demande de licence Early Adopter est bien reçue : vous recevrez sous 24 h le lien de téléchargement et les instructions.
 
 Pour toute question, répondez simplement à cet e-mail.
 
 L'équipe OraScore — https://orascore.io`,
-      htmlContent: `<p>Bonjour,</p>
+      htmlContent: `<p>Bonjour ${esc(prenom)},</p>
         <p>Merci pour votre intérêt pour OraScore. Votre demande de licence Early Adopter est bien reçue :
         vous recevrez sous 24 h le lien de téléchargement et les instructions.</p>
         <p>Pour toute question, répondez simplement à cet e-mail.</p>
