@@ -48,10 +48,14 @@ async function adminEmail(req) {
 const esc = (s) => String(s ?? "").replace(/[&<>"']/g, (c) =>
   ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
-// Texte brut -> HTML simple (paragraphes, lignes, liens cliquables)
+// Marque OraScore comme sur le site : « Ora » foncé, « Score » bleu (version HTML des e-mails)
+const MARQUE = '<span style="font-weight:700;color:#0f172a">Ora</span><span style="font-weight:700;color:#0891b2">Score</span>';
+
+// Texte brut -> HTML simple (paragraphes, lignes, liens cliquables, marque OraScore mise en forme)
 function texteVersHtml(texte) {
   return String(texte).split(/\n{2,}/).map((p) =>
     "<p>" + esc(p).replace(/\n/g, "<br>")
+      .replace(/(?<!\w)OraScore(?!\w|\.\w)/g, MARQUE)   // mot seul : pas dans 1_DEMARRER_OraScore.bat
       .replace(/(https?:\/\/[^\s<]+)/g, '<a href="$1">$1</a>') + "</p>").join("\n");
 }
 
@@ -86,7 +90,7 @@ function modeleAcceptation(c, numero) {
     subject: "OraScore — votre licence Early Adopter",
     text: `Bonjour ${c.prenom || ""},
 
-Merci de rejoindre le programme Early Adopter d'OraScore ! Voici tout ce qu'il faut pour démarrer.
+Merci de rejoindre le programme Early Adopter d'OraScore ! Voici tout ce qu'il vous faut pour démarrer.
 
 1. Télécharger OraScore
 Lien : ${env("DRIVE_URL")}
@@ -97,12 +101,12 @@ Titulaire : ${titulaire(c)}
 Clé : ${cleLicence(numero)}
 
 3. Installer
-- Windows : décompressez le ZIP, puis double-cliquez sur 1_DEMARRER_OraScore.bat. L'assistant vous guide : licence, déclaration de vos bases, test de connexion, première analyse, planification. Rien à installer (Python est fourni).
+- Windows : décompressez le ZIP, puis double-cliquez sur 1_DEMARRER_OraScore.bat. Laissez l'assistant vous guider : licence, déclaration de vos bases, test de connexion, première analyse, planification. Aucune installation ni droit d'administrateur nécessaire.
 - Linux : décompressez le ZIP sur le serveur, puis lancez : bash linux/install_linux.sh
 Le guide d'installation (PDF) et le fichier LISEZ-MOI.txt sont dans le ZIP.
 
 4. Ce que je vous demande en échange
-- tester OraScore sur au moins une base Oracle réelle ;
+- tester OraScore sur au moins une de vos bases Oracle en exploitation ;
 - me faire un retour : bugs rencontrés, résultats qui vous semblent faux, suggestions ;
 - un court témoignage si vous êtes satisfait.
 Répondez simplement à cet e-mail : je lis tout et je réponds personnellement.
@@ -176,5 +180,5 @@ function lireCorps(req) {
   return typeof req.body === "string" ? JSON.parse(req.body || "{}") : (req.body || {});
 }
 
-module.exports = { SUPPORT, env, db, adminEmail, esc, sendMail, cleLicence, titulaire, journal, lireCorps,
+module.exports = { MARQUE, texteVersHtml, SUPPORT, env, db, adminEmail, esc, sendMail, cleLicence, titulaire, journal, lireCorps,
                    modeleAcceptation, modeleRefus, modeleRelance, MOTIFS_REFUS };

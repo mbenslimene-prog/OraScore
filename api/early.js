@@ -8,6 +8,8 @@
 // partent quand même : aucune demande n'est perdue.
 
 const SUPPORT = "support@orascore.io";
+// Marque OraScore comme sur le site : « Ora » foncé, « Score » bleu (version HTML des e-mails)
+const MARQUE = '<span style="font-weight:700;color:#0f172a">Ora</span><span style="font-weight:700;color:#0891b2">Score</span>';
 const TEL_RE = /^[+0-9][0-9 .()-]{5,24}$/;
 const texte = (v, n) => String(v || "").replace(/\s+/g, " ").trim().slice(0, n);
 const EMAIL_RE = /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/;
@@ -116,10 +118,10 @@ Pour toute question, répondez simplement à cet e-mail.
 
 L'équipe OraScore — https://orascore.io`,
       htmlContent: `<p>Bonjour ${esc(prenom)},</p>
-        <p>Merci pour votre intérêt pour OraScore. Votre demande de licence Early Adopter est bien reçue :
+        <p>Merci pour votre intérêt pour ${MARQUE}. Votre demande de licence Early Adopter est bien reçue :
         vous recevrez sous 24 h le lien de téléchargement et les instructions.</p>
         <p>Pour toute question, répondez simplement à cet e-mail.</p>
-        <p>L'équipe OraScore — <a href="https://orascore.io">orascore.io</a></p>`,
+        <p>L'équipe ${MARQUE} — <a href="https://orascore.io">orascore.io</a></p>`,
     });
     return res.status(200).json({ ok: true });
   } catch (e) {
