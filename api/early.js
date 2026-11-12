@@ -74,9 +74,9 @@ async function handler(req, res) {
   if (body.site) return res.status(200).json({ ok: true });
   if (!EMAIL_RE.test(email)) return res.status(400).json({ ok: false, error: "email" });
   if (!prenom || !nom) return res.status(400).json({ ok: false, error: "nom" });
-  if (!TEL_RE.test(tel)) return res.status(400).json({ ok: false, error: "telephone" });
+  if (tel && !TEL_RE.test(tel)) return res.status(400).json({ ok: false, error: "telephone" });   // facultatif
 
-  const candId = await saveRequest({ prenom, nom, email, telephone: tel, societe: societe || null,
+  const candId = await saveRequest({ prenom, nom, email, telephone: tel || null, societe: societe || null,
                                     type_base: profil.type, os: profil.os, version: profil.version,
                                     precisions: env || null });
   try {
@@ -88,7 +88,7 @@ async function handler(req, res) {
       textContent: `Nouvelle demande Early Adopter.
 Nom : ${prenom} ${nom}${societe ? ` (${societe})` : ""}
 E-mail : ${email}
-Téléphone : ${tel}
+Téléphone : ${tel || "non communiqué"}
 Type de base : ${profil.type}
 OS du serveur : ${profil.os}
 Version Oracle : ${profil.version}
@@ -97,7 +97,7 @@ Précisions : ${env || "aucune"}
 Répondre à ce message répond directement au demandeur.`,
       htmlContent: `<p>Nouvelle demande Early Adopter.</p>
         <p><b>Nom :</b> ${esc(prenom)} ${esc(nom)}${societe ? ` (${esc(societe)})` : ""}<br>
-        <b>E-mail :</b> ${esc(email)}<br><b>Téléphone :</b> ${esc(tel)}<br><b>Type de base :</b> ${esc(profil.type)}<br>
+        <b>E-mail :</b> ${esc(email)}<br><b>Téléphone :</b> ${esc(tel || "non communiqué")}<br><b>Type de base :</b> ${esc(profil.type)}<br>
         <b>OS du serveur :</b> ${esc(profil.os)}<br><b>Version Oracle :</b> ${esc(profil.version)}<br>
         <b>Précisions :</b> ${esc(env || "aucune")}</p>
         <p>Répondre à ce message répond directement au demandeur.</p>`,

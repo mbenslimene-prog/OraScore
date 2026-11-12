@@ -530,7 +530,7 @@ footer a{color:#38bdf8;text-decoration:none}
         <input class="early-input" type="text" required maxlength="80" placeholder="Prénom" id="early-prenom" autocomplete="given-name">
         <input class="early-input" type="text" required maxlength="80" placeholder="Nom" id="early-nom" autocomplete="family-name">
         <input class="early-input" type="email" required maxlength="200" placeholder="Votre email professionnel" id="early-email" autocomplete="email">
-        <input class="early-input" type="tel" required maxlength="25" placeholder="Téléphone" id="early-tel" autocomplete="tel">
+        <input class="early-input" type="tel" maxlength="25" placeholder="Téléphone — facultatif" id="early-tel" autocomplete="tel">
         <input class="early-input" type="text" maxlength="120" placeholder="Société — facultatif" id="early-societe" autocomplete="organization">
         <select class="early-input" id="early-type" required aria-label="Type de base principal"><option value="">Type de base principal</option><option value="Instance unique">Instance unique</option><option value="RAC">RAC</option><option value="Data Guard">Data Guard</option><option value="RAC + Data Guard">RAC + Data Guard</option></select>
         <select class="early-input" id="early-os" required aria-label="OS du serveur de base"><option value="">OS du serveur de base</option><option value="Linux">Linux</option><option value="AIX">AIX</option><option value="Windows">Windows</option><option value="Solaris">Solaris</option><option value="Autre">Autre</option></select>
@@ -695,7 +695,7 @@ async function submitEarly(ev) {
     msg.style.color = '#f59e0b';
     return false;
   }
-  if (!/^[+0-9][0-9 .()\-]{5,24}$/.test(tel)) {
+  if (tel && !/^[+0-9][0-9 .()\-]{5,24}$/.test(tel)) {   // facultatif ; vérifié s'il est saisi
     msg.textContent = '⚠ Indiquez un numéro de téléphone valide (ex. 06 12 34 56 78 ou +33 6 12 34 56 78).';
     msg.style.color = '#f59e0b';
     return false;
