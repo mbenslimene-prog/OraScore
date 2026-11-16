@@ -33,9 +33,12 @@ async function demarrer() {
       const { error } = await sb.auth.signInWithOtp({ email: $("loginEmail").value.trim(),
         options: { shouldCreateUser: false, emailRedirectTo: location.origin + "/admin/" } });
       // Même message dans tous les cas : on ne révèle pas quelles adresses sont autorisées
-      $("loginMsg").textContent = error && !/not allowed|signups/i.test(error.message)
-        ? "Envoi impossible pour le moment, réessayez dans quelques minutes."
-        : "Si cette adresse est autorisée, un lien de connexion vient d'être envoyé.";
+      if (error) console.error("connexion :", error.status, error.message);
+      $("loginMsg").textContent = !error || /not allowed|signups/i.test(error.message)
+        ? "Si cette adresse est autorisée, un lien de connexion vient d'être envoyé."
+        : error.status === 429 || /rate limit|security purposes/i.test(error.message)
+          ? "Trop de liens demandés récemment : le service d'envoi limite le nombre de liens par heure. Réessayez dans une heure, ou utilisez le dernier lien reçu s'il a moins d'une heure."
+          : "Envoi impossible pour le moment (" + (error.message || "erreur") + "), réessayez dans quelques minutes.";
     };
     return;
   }
