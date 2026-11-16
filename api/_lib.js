@@ -84,6 +84,12 @@ function titulaire(c) {
   return c.societe ? `${nom} (${c.societe})` : nom;
 }
 
+// ZIP diffusé par le lien Google Drive : À METTRE À JOUR à chaque nouveau ZIP (sha256sum du fichier)
+const ZIP = {
+  nom: "OraScore_Pro_v1.2.0_Portable.zip",
+  sha256: "6e9996fa69796d1536f07f0ab0e6ce762bd2d7d967e82a97ed7a716906761e98",
+};
+
 // ── Modèles d'e-mails (relus et modifiables dans la page avant l'envoi) ──────
 const SIGNATURE = "L'équipe OraScore\nsupport@orascore.io — https://orascore.io";
 
@@ -97,6 +103,10 @@ Merci de rejoindre le programme Early Adopter d'OraScore ! Voici tout ce qu'il v
 1. Télécharger OraScore
 Lien : ${env("DRIVE_URL")}
 Le fichier fait environ 120 Mo. Google affiche « Impossible d'analyser ce fichier pour détecter des virus » : c'est normal pour un fichier de cette taille, cliquez sur « Télécharger quand même ».
+Pour vérifier que le fichier est intact (facultatif), son empreinte SHA-256 doit être :
+${ZIP.sha256}
+- Windows (PowerShell) : Get-FileHash ${ZIP.nom}
+- Linux : sha256sum ${ZIP.nom}
 
 2. Votre licence (offre Équipe, jusqu'à 25 bases, à vie)
 Titulaire : ${titulaire(c)}
