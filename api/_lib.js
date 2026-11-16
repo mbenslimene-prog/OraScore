@@ -78,8 +78,10 @@ function cleLicence(numero) {
   return k;
 }
 
+// Titulaire de la licence : la personne, puis sa société entre parenthèses (champ libre du formulaire)
 function titulaire(c) {
-  return c.societe || `${c.prenom || ""} ${c.nom || ""}`.trim() || c.email;
+  const nom = `${c.prenom || ""} ${c.nom || ""}`.trim() || c.email;
+  return c.societe ? `${nom} (${c.societe})` : nom;
 }
 
 // ── Modèles d'e-mails (relus et modifiables dans la page avant l'envoi) ──────
